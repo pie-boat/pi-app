@@ -4,7 +4,8 @@ import sbt.Keys._
 object PieboatpiBuild extends Build {
 
   val appDependencies = Seq(
-    "pieboat.network" %% "pieboat-network-lib" % "0.1-SNAPSHOT"
+    "pieboat.network" %% "pieboat-network-lib" % "0.1-SNAPSHOT",
+    "com.pi4j" % "pi4j-core" % "0.0.5"
   )
 
   lazy val pieboatpi = Project(
