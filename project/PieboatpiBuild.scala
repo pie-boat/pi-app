@@ -1,5 +1,6 @@
 import sbt._
 import sbt.Keys._
+import com.github.retronym.SbtOneJar.oneJarSettings
 
 object PieboatpiBuild extends Build {
 
@@ -11,7 +12,7 @@ object PieboatpiBuild extends Build {
   lazy val pieboatpi = Project(
     id = "pieboat-pi",
     base = file("."),
-    settings = Project.defaultSettings ++ Seq(
+    settings = Project.defaultSettings ++ oneJarSettings ++ Seq(
       name := "Pieboat-Pi",
       organization := "pieboat.pi",
       version := "0.1-SNAPSHOT",
