@@ -10,7 +10,7 @@ object IO {
   def setGPIOWith(s: String) = Messages.readAndExecute(
     ping = () => Messages.answerHeartbeat,
     status = () => "Not implemented",
-    speed = x => "Not implemented",
+    speed = x => this.speed(x),
     direction = x => "Not implemented",
     frontLights = on => this.frontLights(on),
     sideLights = on => this.sideLights(on),
@@ -18,6 +18,12 @@ object IO {
     debugMB = x => this.debugMB(x),
     debugMC = x => this.debugMC(x)
   )(s)
+
+  def speed(x: Integer) = {
+    this.debugMA(x)
+    this.debugMB(x)
+    this.debugMC(x)
+  }
 
   def frontLights(on: Boolean) = {
     if(on) {
