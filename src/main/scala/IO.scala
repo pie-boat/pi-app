@@ -13,7 +13,7 @@ object IO {
     speed = x => "Not implemented",
     direction = x => "Direction: " + x,
     frontLights = on => this.frontLights(on),
-    sideLights = on => "Side lights: " + (if(on) "ON" else "OFF"),
+    sideLights = on => this.sideLights(on),
     debugMA = x => this.debugMA(x),
     debugMB = x => this.debugMB(x),
     debugMC = x => this.debugMC(x)
@@ -24,6 +24,15 @@ object IO {
       GpioPins.pin25.high
     } else {
       GpioPins.pin25.low
+    }
+    "OK"
+  }
+
+  def sideLights(on: Boolean) = {
+    if(on) {
+      GpioPins.pin24.high
+    } else {
+      GpioPins.pin24.low
     }
     "OK"
   }
@@ -97,4 +106,5 @@ object GpioPins {
   val pin18 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01) // pwm MC
 
   val pin25 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06) // front lights
+  val pin24 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05) // side lights
 }
