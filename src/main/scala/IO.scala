@@ -11,7 +11,7 @@ object IO {
     ping = () => Messages.answerHeartbeat,
     status = () => "Not implemented",
     speed = x => "Not implemented",
-    direction = x => "Direction: " + x,
+    direction = x => "Not implemented",
     frontLights = on => this.frontLights(on),
     sideLights = on => this.sideLights(on),
     debugMA = x => this.debugMA(x),
