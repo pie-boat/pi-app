@@ -29,13 +29,27 @@ object IO {
   }
 
   def debugMA(x: Integer) = {
-    "Not implemented"
+    if(math.abs(x) <= 500) {
+      GpioPins.pin22.low
+
+      if (x >= 0) {
+        GpioPins.pin23.high
+      } else {
+        GpioPins.pin23.low
+      }
+
+      SoftPwm.softPwmCreate(2, 0, 500)
+      SoftPwm.softPwmWrite(2, math.abs(x))
+      "OK"
+    } else {
+      "NOK"
+    }
   }
 
   def debugMB(x: Integer) = {
     if(math.abs(x) <= 500) {
       GpioPins.pin3.low
-      
+
       if (x >= 0) {
         GpioPins.pin4.high
       } else {
@@ -70,11 +84,17 @@ object IO {
 
 object GpioPins {
   val gpio = GpioFactory.getInstance()
- 
-  val pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08) // pwm
-  val pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09) // break
-  val pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07) // direction
-  val pin17 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00)
-  val pin18 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01)
-  val pin25 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06)
+
+  val pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08) // pwm MB
+  val pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09) // break MB
+  val pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07) // direction MB
+
+  val pin27 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02) // pwm MA
+  val pin22 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03) // break MA
+  val pin23 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04) // direction MA
+
+  val pin17 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00) // pwm MC
+  val pin18 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01) // pwm MC
+
+  val pin25 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06) // front lights
 }
