@@ -6,12 +6,12 @@ import scala.util.{Try, Success, Failure}
 
 
 object Main extends App {
-  while(true) {
-    Try {
-      new ServerSocket(Configuration.port)
-    } match {
-      case Failure(e) => println(e.getMessage)
-      case Success(server) => {
+  Try {
+    new ServerSocket(Configuration.port)
+  } match {
+    case Failure(e) => println(e.getMessage)
+    case Success(server) => {
+      while(true) {
         println("Listening on " + Configuration.port + ", awaiting remote…")
         val client = server.accept
         val in = Stream.continually(
@@ -26,8 +26,8 @@ object Main extends App {
 
         println("Remote left")
         client.close
-        server.close
       }
+      server.close
     }
   }
 }
