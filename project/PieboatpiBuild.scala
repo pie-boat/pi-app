@@ -6,7 +6,8 @@ object PieboatpiBuild extends Build {
 
   val appDependencies = Seq(
     "pieboat.network" %% "pieboat-network-lib" % "0.1-SNAPSHOT",
-    "com.pi4j" % "pi4j-core" % "0.0.5"
+    "com.pi4j" % "pi4j-core" % "0.0.5",
+    "com.typesafe.akka" % "akka-actor_2.10" % "2.2.3"
   )
 
   lazy val pieboatpi = Project(

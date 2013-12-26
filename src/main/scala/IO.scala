@@ -8,7 +8,7 @@ object IO {
   com.pi4j.wiringpi.Gpio.wiringPiSetupGpio();
 
   def setGPIOWith(s: String) = Messages.readAndExecute(
-    ping = () => Messages.answerHeartbeat,
+    ping = () => this.ping,
     status = () => "Not implemented",
     speed = x => this.speed(x),
     direction = x => "Not implemented",
@@ -18,6 +18,11 @@ object IO {
     debugMB = x => this.debugMB(x),
     debugMC = x => this.debugMC(x)
   )(s)
+
+  def ping = {
+    Main.stateActor ! Ping
+    Messages.answerHeartbeat
+  }
 
   def speed(x: Integer) = {
     this.debugMA(x)
