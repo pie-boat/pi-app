@@ -17,7 +17,10 @@ object PieboatpiBuild extends Build {
       organization := "pieboat.pi",
       version := "0.1-SNAPSHOT",
       scalaVersion := "2.10.2",
-      libraryDependencies ++= appDependencies
+      libraryDependencies ++= appDependencies,
+      scalacOptions ++= Seq(
+        "-language:postfixOps", "-unchecked", "-deprecation", "-feature"
+      )
     )
   )
 }
