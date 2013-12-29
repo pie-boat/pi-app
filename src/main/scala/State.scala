@@ -21,3 +21,8 @@ class State extends Actor {
     }
   }
 }
+
+object State {
+  var speed = 0
+  var direction = 0
+}

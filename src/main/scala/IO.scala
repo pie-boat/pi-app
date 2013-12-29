@@ -11,12 +11,12 @@ object IO {
     ping = () => this.ping,
     status = () => "Not implemented",
     speed = x => this.speed(x),
-    direction = x => "Not implemented",
+    direction = x => this.direction(x),
     frontLights = on => this.frontLights(on),
     sideLights = on => this.sideLights(on),
-    debugMA = x => this.debugMA(x),
-    debugMB = x => this.debugMB(x),
-    debugMC = x => this.debugMC(x)
+    debugMA = x => this.MAspeed(x),
+    debugMB = x => this.MBspeed(x),
+    debugMC = x => this.MCspeed(x)
   )(s)
 
   def ping = {
@@ -25,9 +25,44 @@ object IO {
   }
 
   def speed(x: Integer) = {
-    this.debugMA(x)
-    this.debugMB(x)
-    this.debugMC(x)
+    if(math.abs(x) <= 500) {
+      State.speed = x
+      this._setMotorsSpeed
+      "OK"
+    } else {
+      "NOK"
+    }
+  }
+
+  def direction(x: Integer) = {
+    if(math.abs(x) <= 500) {
+      State.direction = x
+      this._setMotorsSpeed
+      "OK"
+    } else {
+      "NOK"
+    }
+  }
+
+  def _setMotorsSpeed {
+    if(math.abs(State.speed) >= 300 && math.abs(State.direction) < 250) {
+      this.MCspeed((math.abs(State.speed) - 300) * math.signum(State.speed) * (500/200))
+    } else {
+      this.MCspeed(0)
+    }
+
+    if(State.speed > 0) {
+      if(State.direction != 0) {
+        this.MAspeed((State.speed * ((State.direction + 500) / 500.0)).toInt)
+        this.MBspeed((State.speed * math.abs((State.direction + 500) / 500.0 - 2)).toInt)
+      } else {
+        this.MAspeed(State.speed)
+        this.MBspeed(State.speed)
+      }
+    } else {
+      this.MAspeed(0)
+      this.MBspeed(0)
+    }
   }
 
   def frontLights(on: Boolean) = {
@@ -48,7 +83,7 @@ object IO {
     "OK"
   }
 
-  def debugMA(x: Integer) = {
+  def MAspeed(x: Integer): String = {
     if(math.abs(x) <= 500) {
       GpioPins.pin22.low
 
@@ -60,13 +95,13 @@ object IO {
 
       SoftPwm.softPwmCreate(2, 0, 500)
       SoftPwm.softPwmWrite(2, math.abs(x))
-      "OK"
     } else {
-      "NOK"
+      MAspeed(500 * math.signum(x))
     }
+    "OK"
   }
 
-  def debugMB(x: Integer) = {
+  def MBspeed(x: Integer): String = {
     if(math.abs(x) <= 500) {
       GpioPins.pin3.low
 
@@ -78,13 +113,13 @@ object IO {
 
       SoftPwm.softPwmCreate(8, 0, 500)
       SoftPwm.softPwmWrite(8, math.abs(x))
-      "OK"
     } else {
-      "NOK"
+      MBspeed(500 * math.signum(x))
     }
+    "OK"
   }
 
-  def debugMC(x: Integer) = {
+  def MCspeed(x: Integer): String = {
     if(math.abs(x) <= 500) {
       if (x >= 0) {
         SoftPwm.softPwmCreate(0, 0, 500)
@@ -95,10 +130,10 @@ object IO {
         SoftPwm.softPwmCreate(0, 0, 500)
         SoftPwm.softPwmWrite(0, math.abs(x))
       }
-      "OK"
     } else {
-      "NOK"
+      MCspeed(500 * math.signum(x))
     }
+    "OK"
   }
 }
 
