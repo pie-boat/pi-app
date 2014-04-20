@@ -39,7 +39,10 @@ object Main extends App {
 
         pingChecker.cancel
 
-        println("Remote left")
+        println("Remote left, stopping motors…")
+        IO.speed(0)
+        State.speed = 0
+        State.direction = 0
         client.close
       }
       server.close
