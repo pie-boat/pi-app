@@ -1,13 +1,13 @@
 package pieboat.pi
 
 import pieboat.network.Messages
-import com.pi4j.wiringpi.SoftPwm
-import com.pi4j.io.gpio._
 
 object IO {
-  com.pi4j.wiringpi.Gpio.wiringPiSetupGpio();
+  if(Config.onPi) {
+    com.pi4j.wiringpi.Gpio.wiringPiSetupGpio();
+  }
 
-  def setGPIOWith(s: String) = Messages.readAndExecute(
+  def setGPIOWith(s: String) = { println("Received: " + s); Messages.readAndExecute(
     ping = () => this.ping,
     status = () => "Not implemented",
     speed = x => this.speed(x),
@@ -17,7 +17,7 @@ object IO {
     debugMA = x => this.MAspeed(x),
     debugMB = x => this.MBspeed(x),
     debugMC = x => this.MCspeed(x)
-  )(s)
+  )(s)}
 
   def ping = {
     Main.stateActor ! Ping
@@ -93,8 +93,7 @@ object IO {
         GpioPins.pin23.low
       }
 
-      SoftPwm.softPwmCreate(2, 0, 500)
-      SoftPwm.softPwmWrite(2, math.abs(x))
+      GpioPins.pin27.pwm(math.abs(x))
     } else {
       MAspeed(500 * math.signum(x))
     }
@@ -111,8 +110,7 @@ object IO {
         GpioPins.pin4.low
       }
 
-      SoftPwm.softPwmCreate(8, 0, 500)
-      SoftPwm.softPwmWrite(8, math.abs(x))
+      GpioPins.pin2.pwm(math.abs(x))
     } else {
       MBspeed(500 * math.signum(x))
     }
@@ -122,13 +120,11 @@ object IO {
   def MCspeed(x: Integer): String = {
     if(math.abs(x) <= 500) {
       if (x >= 0) {
-        SoftPwm.softPwmCreate(0, 0, 500)
-        SoftPwm.softPwmCreate(1, 0, 500)
-        SoftPwm.softPwmWrite(1, math.abs(x))
+        GpioPins.pin17.pwm(0)
+        GpioPins.pin18.pwm(math.abs(x))
       } else {
-        SoftPwm.softPwmCreate(1, 0, 500)
-        SoftPwm.softPwmCreate(0, 0, 500)
-        SoftPwm.softPwmWrite(0, math.abs(x))
+        GpioPins.pin18.pwm(0)
+        GpioPins.pin17.pwm(math.abs(x))
       }
     } else {
       MCspeed(500 * math.signum(x))
@@ -138,19 +134,17 @@ object IO {
 }
 
 object GpioPins {
-  val gpio = GpioFactory.getInstance()
+  val pin2 = DigitalPin(2, "pwm MB")
+  val pin3 = DigitalPin(3, "break MB")
+  val pin4 = DigitalPin(4, "direction MB")
 
-  val pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08) // pwm MB
-  val pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09) // break MB
-  val pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07) // direction MB
+  val pin27 = DigitalPin(27, "pwm MA")
+  val pin22 = DigitalPin(22, "break MA")
+  val pin23 = DigitalPin(23, "direction MA")
 
-  val pin27 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02) // pwm MA
-  val pin22 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03) // break MA
-  val pin23 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04) // direction MA
+  val pin17 = DigitalPin(17, "pwm MC")
+  val pin18 = DigitalPin(18, "pwm MC")
 
-  val pin17 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00) // pwm MC
-  val pin18 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01) // pwm MC
-
-  val pin25 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06) // front lights
-  val pin24 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05) // side lights
+  val pin25 = DigitalPin(25, "front lights")
+  val pin24 = DigitalPin(24, "side lights")
 }

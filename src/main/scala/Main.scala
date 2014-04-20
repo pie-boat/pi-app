@@ -13,12 +13,12 @@ object Main extends App {
   import system.dispatcher // execution context
 
   Try {
-    new ServerSocket(Configuration.port)
+    new ServerSocket(Config.port)
   } match {
     case Failure(e) => println(e.getMessage)
     case Success(server) => {
       while(true) {
-        println("Listening on " + Configuration.port + ", awaiting remote…")
+        println("Listening on " + Config.port + ", awaiting remote…")
         val client = server.accept
         val in = Stream.continually(
           (new BufferedReader(new InputStreamReader(client.getInputStream))).readLine
